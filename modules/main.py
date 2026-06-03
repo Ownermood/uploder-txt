@@ -1133,12 +1133,27 @@ sys.excepthook = _handle_unhandled_exception
 async def _run_forever():
     """Start background tasks then keep the event loop alive."""
     asyncio.create_task(_auto_cleanup())
+    try:
+        await bot.send_message(OWNER, "⚡ Pyrogram connected! Bot is fully ready.")
+    except Exception as e:
+        print(f"[STARTUP] Pyrogram test message failed: {e}")
     await asyncio.Event().wait()
 
 
 if __name__ == "__main__":
-    # Delete any existing webhook so long-polling works (keep pending updates)
-    requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook")
+    # Check and delete any existing webhook
+    try:
+        wh_info = requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo", timeout=10).json()
+        wh_url = wh_info.get("result", {}).get("url", "")
+        if wh_url:
+            print(f"[STARTUP] Webhook found: {wh_url} — deleting...")
+            requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook", timeout=10)
+            print("[STARTUP] Webhook deleted.")
+        else:
+            print("[STARTUP] No webhook set. Long polling mode OK.")
+    except Exception as e:
+        print(f"[STARTUP] Webhook check failed: {e}")
+
     reset_and_set_commands()
     notify_owner()
     try:
