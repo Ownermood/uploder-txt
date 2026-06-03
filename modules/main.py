@@ -1118,6 +1118,18 @@ def notify_owner():
     requests.post(url, data=data)
 
 
+import traceback as _traceback
+import logging as _logging
+
+def _handle_unhandled_exception(exc_type, exc_value, exc_tb):
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_tb)
+        return
+    _logging.critical("Unhandled exception caused crash:", exc_info=(exc_type, exc_value, exc_tb))
+
+sys.excepthook = _handle_unhandled_exception
+
+
 async def _run_forever():
     """Start background tasks then keep the event loop alive."""
     asyncio.create_task(_auto_cleanup())
@@ -1132,5 +1144,5 @@ if __name__ == "__main__":
     try:
         bot.run(_run_forever())
     except Exception as e:
-        print(f"[FATAL] bot.run crashed: {e}")
+        _logging.critical(f"[FATAL] bot.run crashed: {e}\n{_traceback.format_exc()}")
         raise
