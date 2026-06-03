@@ -18,13 +18,14 @@ async def broadcast_handler(client: Client, message: Message):
         await message.reply_text("**Reply to any message (text, photo, video, or file) with /broadcast to send it to all users.**")
         return
     
-    bot_username = client.me.username
+    _me = await client.get_me()
+    bot_username = _me.username
     users = db.list_users(bot_username)
-    
+
     if not users:
         await message.reply_text("**No users found in database.**")
         return
-    
+
     success = 0
     fail = 0
     for user in users:
@@ -73,7 +74,8 @@ async def broadusers_handler(client: Client, message: Message):
     if message.chat.id != OWNER:
         return
 
-    bot_username = client.me.username
+    _me = await client.get_me()
+    bot_username = _me.username
     users = db.list_users(bot_username)
 
     if not users:

@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-from typing import Optional, Dict, List, Union
+from typing import Optional, Dict, List, Union, Tuple
 from pymongo import MongoClient, errors
 from pymongo.database import Database as MongoDatabase
 from pymongo.collection import Collection
@@ -227,7 +227,7 @@ class Database:
             return False
 
     def add_user(self, user_id: int, name: str, days: int, 
-                bot_username: str = "drmhandler") -> tuple[bool, Optional[datetime]]:
+                bot_username: str = "drmhandler") -> Tuple[bool, Optional[datetime]]:
         """
         Add or update a user in the database
         

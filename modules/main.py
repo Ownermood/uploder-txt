@@ -245,7 +245,7 @@ async def help_button(client, callback_query):
     )
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
 @bot.on_callback_query(filters.regex("owner_command"))
-async def help_button(client, callback_query):
+async def help_button_owner(client, callback_query):
   user_id = callback_query.from_user.id
   first_name = callback_query.from_user.first_name
   keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back to Commands", callback_data="cmd_command")]])
@@ -665,7 +665,7 @@ async def set_quality_1080(client, callback_query):
     await callback_query.message.edit(f"✅ Video Quality set to **1080p (Full HD)** !", reply_markup=keyboard)
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
 @bot.on_callback_query(filters.regex("topic_command"))
-async def video_watermark(client, callback_query):
+async def handle_topic_command(client, callback_query):
     user_id = callback_query.from_user.id
     keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back to Settings", callback_data="setttings")]])
     editable = await callback_query.message.edit(f"**If you want to enable topic in caption: send /yes or send /d**\n\n<blockquote><b>Topic fetch from (bracket) in title</b></blockquote>", reply_markup=keyboard)

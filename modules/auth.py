@@ -43,7 +43,8 @@ async def add_user_cmd(client: Client, message: Message):
         days = int(args[1])
 
         # Get bot username
-        bot_username = client.me.username
+        _me = await client.get_me()
+        bot_username = _me.username
 
         try:
             # Try to get user info from Telegram
@@ -111,7 +112,8 @@ async def remove_user_cmd(client: Client, message: Message):
         user_id = int(args[0])
         
         # Remove user from database
-        if db.remove_user(user_id, client.me.username):
+        _me = await client.get_me()
+        if db.remove_user(user_id, _me.username):
             await message.reply_text(f"✅ User {user_id} removed.")
         else:
             await message.reply_text(f"❌ User {user_id} not found.")
@@ -130,7 +132,8 @@ async def list_users_cmd(client: Client, message: Message):
             await message.reply_text("❌ Not authorized to list users.")
             return
 
-        users = db.list_users(client.me.username)
+        _me = await client.get_me()
+        users = db.list_users(_me.username)
         
         if not users:
             await message.reply_text("📝 No users found.")
@@ -161,7 +164,8 @@ async def list_users_cmd(client: Client, message: Message):
 async def my_plan_cmd(client: Client, message: Message):
     """Show user's current plan details"""
     try:
-        user = db.get_user(message.from_user.id, client.me.username)
+        _me = await client.get_me()
+        user = db.get_user(message.from_user.id, _me.username)
         
         if not user:
             await message.reply_text("❌ No active plan.")
