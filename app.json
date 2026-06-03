@@ -1,6 +1,6 @@
 {
-    "name": "𝐒𝐚𝐢𝐧𝐢 𝐓𝐱𝐭 𝐋𝐞𝐞𝐜𝐡 𝐁𝐨𝐭",
-    "description": "𝑻𝒆𝒙𝒕 𝑳𝒆𝒆𝒄𝒉 𝑽𝒊𝒅𝒆𝒐 𝑬𝒙𝒕𝒓𝒂𝒄𝒕𝒐𝒓 𝑭𝒐𝒓 𝑻𝒆𝒍𝒆𝒈𝒓𝒂𝒎",
+    "name": "Golden Eagle Uploader Bot",
+    "description": "Text Leech Video Extractor For Telegram",
     "logo": "",
     "keywords": [
         "text-video",
@@ -12,29 +12,54 @@
     "stack": "container",
     "env": {
         "API_ID": {
-            "description": "𝑬𝒏𝒕𝒆𝒓 𝒀𝒐𝒖𝒓 𝑨𝒑𝒊 𝑰𝑫",
-            "value": "26713214",
+            "description": "Enter Your API ID from my.telegram.org",
+            "value": "35190697",
             "required": true
         },
         "API_HASH": {
-            "description": "𝑬𝒏𝒕𝒆𝒓 𝒀𝒐𝒖𝒓 𝑨𝒑𝒊 𝑯𝒂𝒔𝒉",
-            "value": "fc87c0fb26949deb0bc940dd35c1658d",
+            "description": "Enter Your API HASH from my.telegram.org",
+            "value": "f5a027b1cae33a1e29875c43f7787678",
             "required": true
         },
         "BOT_TOKEN": {
-            "description": "𝑬𝒏𝒕𝒆𝒓 𝒀𝒐𝒖𝒓 𝑩𝒐𝒕 𝑻𝒐𝒌𝒆𝒏",
-            "value": "",
+            "description": "Enter Your Bot Token from @BotFather",
+            "value": "8801258181:AAEDj-VMZNLvYTiCnB-5x_orNJ4vnC1aiYI",
             "required": true
         },
         "OWNER": {
-            "description": "𝙀𝙣𝙩𝙚𝙧 𝙔𝙤𝙪𝙧 𝙏𝙚𝙡𝙚𝙜𝙧𝙖𝙢 𝙄𝘿",
-            "value": "7752941299",
+            "description": "Your Telegram User ID",
+            "value": "8938138545",
             "required": true
         },
-        "CREDIT": {
-            "description": "𝙀𝙣𝙩𝙚𝙧 𝘾𝙧𝙚𝙙𝙞𝙩 𝙉𝙖𝙢𝙚 𝙞𝙣 𝙖𝙡𝙢𝙤𝙨𝙩 6-8 𝙡𝙚𝙩𝙩𝙚𝙧𝙨",
-            "value": "👨‍💻Rick Johnson",
+        "OWNER_ID": {
+            "description": "Your Telegram User ID (admin)",
+            "value": "8938138545",
             "required": true
+        },
+        "OWNER_ID2": {
+            "description": "Second admin Telegram User ID",
+            "value": "8494053059",
+            "required": false
+        },
+        "CREDIT": {
+            "description": "Credit Name",
+            "value": "CLAT OWNER",
+            "required": false
+        },
+        "CREDIT_LINK": {
+            "description": "Credit Link",
+            "value": "https://t.me/CLAT_OWNER",
+            "required": false
+        },
+        "MONGO_URL": {
+            "description": "MongoDB Connection URL",
+            "value": "mongodb+srv://ownermood1_db_user:ownuploder@cluster0.hbx5ktm.mongodb.net/?appName=Cluster0",
+            "required": true
+        },
+        "DATABASE_NAME": {
+            "description": "MongoDB Database Name",
+            "value": "eagle",
+            "required": false
         }
     },
     "formation": {
@@ -50,9 +75,9 @@
         },
         {
             "url": "heroku/python"
-        },       
+        },
         {
             "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
         }
     ]
-    }
+}
