@@ -90,6 +90,7 @@ async def start(bot, m: Message):
 
         async def edit_msg(text, **kwargs):
             if has_photo:
+                kwargs.pop("disable_web_page_preview", None)
                 await start_message.edit_caption(text, **kwargs)
             else:
                 await start_message.edit_text(text, **kwargs)
