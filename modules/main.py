@@ -73,90 +73,88 @@ bot.add_handler(MessageHandler(auth.my_plan_cmd, filters.command("plan") & filte
 @bot.on_message(filters.command("start"))
 async def start(bot, m: Message):
     try:
-     user_id = m.chat.id
-     user = await bot.get_me()
-     bot_username = user.username
+        user_id = m.chat.id
+        user = await bot.get_me()
+        bot_username = user.username
 
-     mention = user.mention
-     caption = f"🌟 Welcome {m.from_user.mention} ! 🌟"
-     try:
-        start_message = await bot.send_photo(
-            chat_id=m.chat.id,
-            photo="https://i.ibb.co/zTPJFct8/photo-2025-04-25-12-55-01-7497233558289776672.jpg",
-            caption=caption
+        caption = f"🌟 Welcome {m.from_user.mention} ! 🌟"
+        try:
+            start_message = await bot.send_photo(
+                chat_id=m.chat.id,
+                photo="https://i.ibb.co/zTPJFct8/photo-2025-04-25-12-55-01-7497233558289776672.jpg",
+                caption=caption
+            )
+        except Exception:
+            start_message = await m.reply_text(caption)
+
+        await asyncio.sleep(1)
+        await start_message.edit_text(
+            f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n"
+            f"Initializing Uploader bot... 🤖\n\n"
+            f"Progress: [⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️] 0%\n\n"
         )
-     except Exception:
-        start_message = await m.reply_text(caption)
 
-     await asyncio.sleep(1)
-     await start_message.edit_text(
-        f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
-        f"Initializing Uploader bot... 🤖\n\n"
-        f"Progress: [⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️] 0%\n\n"
-    )
+        await asyncio.sleep(1)
+        await start_message.edit_text(
+            f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n"
+            f"Loading features... ⏳\n\n"
+            f"Progress: [🟥🟥🟥⬜️⬜️⬜️⬜️⬜️⬜️⬜️] 25%\n\n"
+        )
 
-    await asyncio.sleep(1)
-    await start_message.edit_text(
-        f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
-        f"Loading features... ⏳\n\n"
-        f"Progress: [🟥🟥🟥⬜️⬜️⬜️⬜️⬜️⬜️⬜️] 25%\n\n"
-    )
-    
-    await asyncio.sleep(1)
-    await start_message.edit_text(
-        f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
-        f"This may take a moment, sit back and relax! 😊\n\n"
-        f"Progress: [🟧🟧🟧🟧🟧⬜️⬜️⬜️⬜️⬜️] 50%\n\n"
-    )
+        await asyncio.sleep(1)
+        await start_message.edit_text(
+            f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n"
+            f"This may take a moment, sit back and relax! 😊\n\n"
+            f"Progress: [🟧🟧🟧🟧🟧⬜️⬜️⬜️⬜️⬜️] 50%\n\n"
+        )
 
-    await asyncio.sleep(1)
-    await start_message.edit_text(
-        f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
-        f"Checking subscription status... 🔍\n\n"
-        f"Progress: [🟨🟨🟨🟨🟨🟨🟨🟨⬜️⬜️] 75%\n\n"
-    )
+        await asyncio.sleep(1)
+        await start_message.edit_text(
+            f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n"
+            f"Checking subscription status... 🔍\n\n"
+            f"Progress: [🟨🟨🟨🟨🟨🟨🟨🟨⬜️⬜️] 75%\n\n"
+        )
 
-    await asyncio.sleep(1)
-    # Check authorization via database
-    is_authorized = db.is_user_authorized(user_id, bot_username)
-    is_admin = db.is_admin(user_id)
-    
-    if is_authorized:
+        await asyncio.sleep(1)
+        is_authorized = db.is_user_authorized(user_id, bot_username)
+        is_admin = db.is_admin(user_id)
+
         keyboard = InlineKeyboardMarkup([
             [InlineKeyboardButton("✨ Commands", callback_data="cmd_command")],
             [InlineKeyboardButton("💎 Features", callback_data="feat_command"), InlineKeyboardButton("⚙️ Settings", callback_data="setttings")],
             [InlineKeyboardButton("💳 Plans", callback_data="upgrade_command")],
             [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🦅 Join", url="https://t.me/+2y45kqIrSg5iYTI1")],
         ])
-        
-        # Get subscription info if available
-        user_info = db.get_user_expiry_info(user_id, bot_username)
-        subscription_text = ""
-        if user_info and not is_admin:
-            subscription_text = f"\n📅 Subscription expires in {user_info['days_left']} days\n"
-        
-        await start_message.edit_text(
-            f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
-            f"Great! You are a premium member!\n" +
-            subscription_text +
-            f"Use button : **✨ Commands** to get started 🌟\n\n"
-            f"If you face any problem contact -  [{CREDIT}⁬](tg://openmessage?user_id={OWNER})\n", disable_web_page_preview=True, reply_markup=keyboard
-        )
-    else:
-        await asyncio.sleep(2)
-        keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("✨ Commands", callback_data="cmd_command")],
-            [InlineKeyboardButton("💎 Features", callback_data="feat_command"), InlineKeyboardButton("⚙️ Settings", callback_data="setttings")],
-            [InlineKeyboardButton("💳 Plans", callback_data="upgrade_command")],
-            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🦅 Join", url="https://t.me/+2y45kqIrSg5iYTI1")],
-        ])
-        await start_message.edit_text(
-           f" 🎉 Welcome {m.from_user.first_name} to DRM Bot! 🎉\n\n"
-           f"**You are currently using the free version.** 🆓\n\n<blockquote expandable>I'm here to make your life easier by downloading videos from your **.txt** file 📄 and uploading them directly to Telegram!</blockquote>\n\n**Want to get started? Press /id**\n\n💬 Contact : [{CREDIT}⁬](tg://openmessage?user_id={OWNER}) to Get The Subscription 🎫 and unlock the full potential of your new bot! 🔓\n", disable_web_page_preview=True, reply_markup=keyboard
-        )
+
+        if is_authorized:
+            user_info = db.get_user_expiry_info(user_id, bot_username)
+            subscription_text = ""
+            if user_info and not is_admin:
+                subscription_text = f"\n📅 Subscription expires in {user_info['days_left']} days\n"
+            await start_message.edit_text(
+                f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n"
+                f"Great! You are a premium member!\n"
+                + subscription_text +
+                f"Use button : **✨ Commands** to get started 🌟\n\n"
+                f"If you face any problem contact -  [{CREDIT}⁬](tg://openmessage?user_id={OWNER})\n",
+                disable_web_page_preview=True, reply_markup=keyboard
+            )
+        else:
+            await asyncio.sleep(2)
+            await start_message.edit_text(
+                f" 🎉 Welcome {m.from_user.first_name} to DRM Bot! 🎉\n\n"
+                f"**You are currently using the free version.** 🆓\n\n"
+                f"<blockquote expandable>I'm here to make your life easier by downloading videos from your **.txt** file 📄 and uploading them directly to Telegram!</blockquote>\n\n"
+                f"**Want to get started? Press /id**\n\n"
+                f"💬 Contact : [{CREDIT}⁬](tg://openmessage?user_id={OWNER}) to Get The Subscription 🎫 and unlock the full potential of your new bot! 🔓\n",
+                disable_web_page_preview=True, reply_markup=keyboard
+            )
     except Exception as e:
         print(f"Start handler error: {e}")
-        await m.reply_text(f"⚠️ Error: {e}")
+        try:
+            await m.reply_text(f"⚠️ Error: {e}")
+        except Exception:
+            pass
 
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
