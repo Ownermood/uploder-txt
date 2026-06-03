@@ -77,38 +77,46 @@ async def start(bot, m: Message):
         bot_username = user.username
 
         caption = f"🌟 Welcome {m.from_user.mention} ! 🌟"
+        has_photo = False
         try:
             start_message = await bot.send_photo(
                 chat_id=m.chat.id,
                 photo="https://i.ibb.co/zTPJFct8/photo-2025-04-25-12-55-01-7497233558289776672.jpg",
                 caption=caption
             )
+            has_photo = True
         except Exception:
             start_message = await m.reply_text(caption)
 
+        async def edit_msg(text, **kwargs):
+            if has_photo:
+                await start_message.edit_caption(text, **kwargs)
+            else:
+                await start_message.edit_text(text, **kwargs)
+
         await asyncio.sleep(1)
-        await start_message.edit_text(
+        await edit_msg(
             f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n"
             f"Initializing Uploader bot... 🤖\n\n"
             f"Progress: [⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️] 0%\n\n"
         )
 
         await asyncio.sleep(1)
-        await start_message.edit_text(
+        await edit_msg(
             f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n"
             f"Loading features... ⏳\n\n"
             f"Progress: [🟥🟥🟥⬜️⬜️⬜️⬜️⬜️⬜️⬜️] 25%\n\n"
         )
 
         await asyncio.sleep(1)
-        await start_message.edit_text(
+        await edit_msg(
             f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n"
             f"This may take a moment, sit back and relax! 😊\n\n"
             f"Progress: [🟧🟧🟧🟧🟧⬜️⬜️⬜️⬜️⬜️] 50%\n\n"
         )
 
         await asyncio.sleep(1)
-        await start_message.edit_text(
+        await edit_msg(
             f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n"
             f"Checking subscription status... 🔍\n\n"
             f"Progress: [🟨🟨🟨🟨🟨🟨🟨🟨⬜️⬜️] 75%\n\n"
@@ -130,7 +138,7 @@ async def start(bot, m: Message):
             subscription_text = ""
             if user_info and not is_admin:
                 subscription_text = f"\n📅 Subscription expires in {user_info['days_left']} days\n"
-            await start_message.edit_text(
+            await edit_msg(
                 f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n"
                 f"Great! You are a premium member!\n"
                 + subscription_text +
@@ -140,7 +148,7 @@ async def start(bot, m: Message):
             )
         else:
             await asyncio.sleep(2)
-            await start_message.edit_text(
+            await edit_msg(
                 f" 🎉 Welcome {m.from_user.first_name} to DRM Bot! 🎉\n\n"
                 f"**You are currently using the free version.** 🆓\n\n"
                 f"<blockquote expandable>I'm here to make your life easier by downloading videos from your **.txt** file 📄 and uploading them directly to Telegram!</blockquote>\n\n"
