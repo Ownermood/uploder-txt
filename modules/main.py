@@ -58,7 +58,6 @@ bot = Client(
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
     max_concurrent_transmissions=10,
-    in_memory=True
 )
 
 # Register authentication command handlers
@@ -1141,6 +1140,12 @@ async def _run_forever():
 
 
 if __name__ == "__main__":
+    # Remove stale session file to prevent conflicts on restart
+    for _sf in ["bot.session", "bot.session-journal"]:
+        if os.path.exists(_sf):
+            os.remove(_sf)
+            print(f"[STARTUP] Removed old session file: {_sf}")
+
     # Check and delete any existing webhook
     try:
         wh_info = requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo", timeout=10).json()
