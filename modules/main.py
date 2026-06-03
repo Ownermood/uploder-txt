@@ -57,7 +57,8 @@ bot = Client(
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
-    max_concurrent_transmissions=10
+    max_concurrent_transmissions=10,
+    in_memory=True
 )
 
 # Register authentication command handlers
@@ -1124,8 +1125,12 @@ async def _run_forever():
 
 
 if __name__ == "__main__":
-    # Delete any existing webhook so long-polling works
-    requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook?drop_pending_updates=true")
+    # Delete any existing webhook so long-polling works (keep pending updates)
+    requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook")
     reset_and_set_commands()
     notify_owner()
-    bot.run(_run_forever())
+    try:
+        bot.run(_run_forever())
+    except Exception as e:
+        print(f"[FATAL] bot.run crashed: {e}")
+        raise
