@@ -1,0 +1,28 @@
+# ── Sensitive credentials ─────────────────────────────────────────────────────
+device_private_key.txt
+device_client_id_blob
+youtube_cookies.txt
+.env
+*.env
+
+# ── Runtime / temp files ──────────────────────────────────────────────────────
+downloads/
+temp_zip_*/
+*.mp4
+*.mkv
+*.m4a
+*.webm
+*.pdf
+*.jpg
+*.png
+*.mp3
+*.zip
+thumb.jpg
+logs.txt
+bot_session*
+*.session
+*.session-journal
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store

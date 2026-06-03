@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: golden-eagle-bot-v2
+    plan: standard
+    env: docker
+    dockerfilePath: Dockerfile
+    autoDeploy: false
+    healthCheckPath: /
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: API_ID
+        sync: false
+      - key: API_HASH
+        sync: false
+      - key: OWNER
+        sync: false
+      - key: OWNER_ID
+        sync: false
+      - key: CREDIT
+        sync: false
+      - key: CREDIT_LINK
+        sync: false
+      - key: MONGO_URL
+        sync: false
+      - key: DATABASE_NAME
+        value: eagle
+      - key: PORT
+        value: 8080
