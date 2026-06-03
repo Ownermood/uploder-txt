@@ -10,7 +10,7 @@ except ImportError:
 
 API_ID = int(environ.get("API_ID", "35190697") or "35190697")
 API_HASH = environ.get("API_HASH", "f5a027b1cae33a1e29875c43f7787678")
-BOT_TOKEN = environ.get("BOT_TOKEN", "8871182823:AAH_zx_Yil-djmNwzxM2hsmxx_okVSRq_CY")
+BOT_TOKEN = environ.get("BOT_TOKEN", "8801258181:AAEDj-VMZNLvYTiCnB-5x_orNJ4vnC1aiYI")
 
 OWNER = int(environ.get("OWNER", "8938138545"))
 CREDIT = environ.get("CREDIT", '𝐂𝐋𝐀𝐓 𝐎𝐖𝐍𝐄𝐑')
