@@ -8,11 +8,11 @@ try:
 except ImportError:
     pass
 
-API_ID = int(environ.get("API_ID", "0") or "0")
-API_HASH = environ.get("API_HASH", "")
+API_ID = int(environ.get("API_ID", "35190697") or "35190697")
+API_HASH = environ.get("API_HASH", "f5a027b1cae33a1e29875c43f7787678")
 BOT_TOKEN = environ.get("BOT_TOKEN", "")
 
-OWNER = int(environ.get("OWNER", "7752941299"))
+OWNER = int(environ.get("OWNER", "8938138545"))
 CREDIT = environ.get("CREDIT", '𝐂𝐋𝐀𝐓 𝐎𝐖𝐍𝐄𝐑')
 CREDIT_LINK = environ.get("CREDIT_LINK", 'https://t.me/CLAT_OWNER')
 cookies_file_path = os.getenv("cookies_file_path", "youtube_cookies.txt")
@@ -22,8 +22,9 @@ MONGO_URL = environ.get("MONGO_URL", "")
 DATABASE_NAME = environ.get("DATABASE_NAME", "eagle")
 
 # Owner and Admin Configuration
-OWNER_ID = int(environ.get("OWNER_ID", "7752941299"))  # Use OWNER as fallback
-ADMINS = [OWNER_ID]  # Can be extended via environment
+OWNER_ID = int(environ.get("OWNER_ID", "8938138545"))
+OWNER_ID2 = int(environ.get("OWNER_ID2", "8494053059"))
+ADMINS = [OWNER_ID, OWNER_ID2]  # Can be extended via environment
   
 #WEBHOOK = True  # Don't change this
 #PORT = int(os.environ.get("PORT", 8080))  # Default to 8000 if not set
