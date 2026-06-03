@@ -1129,17 +1129,19 @@ def _handle_unhandled_exception(exc_type, exc_value, exc_tb):
 sys.excepthook = _handle_unhandled_exception
 
 
-async def _run_forever():
-    """Start background tasks then keep the event loop alive."""
+async def main():
+    """Explicit start → run → stop so startup errors are never swallowed."""
     asyncio.create_task(_auto_cleanup())
 
-    # Confirm pyrogram is actually connected by querying Telegram via MTProto
+    _logging.info("[STARTUP] Starting pyrogram client…")
+    await bot.start()
+    _logging.info("[STARTUP] bot.start() completed")
+
     try:
         me = await bot.get_me()
-        _logging.info(f"[STARTUP] Pyrogram connected as @{me.username} (id={me.id})")
-        # Write live status to a file so the flask health page can show it
+        _logging.info(f"[STARTUP] Connected as @{me.username} (id={me.id})")
         try:
-            with open("/app/bot_status.json", "w") as _sf:
+            with open("bot_status.json", "w") as _sf:
                 json.dump({
                     "connected": True,
                     "username": me.username,
@@ -1149,20 +1151,19 @@ async def _run_forever():
                 }, _sf)
         except Exception:
             pass
-        # This message ONLY arrives if MTProto is truly working
         for _admin in {OWNER, OWNER_ID, *ADMINS}:
             try:
                 await bot.send_message(
                     _admin,
-                    f"✅ @{me.username} is LIVE and listening!\nSend /start to test."
+                    f"✅ @{me.username} is LIVE!\nSend /start to test."
                 )
                 break
             except Exception as e:
                 _logging.warning(f"[STARTUP] Could not message {_admin}: {e}")
     except Exception as e:
-        _logging.critical(f"[STARTUP] get_me() failed — pyrogram NOT connected: {e}")
+        _logging.critical(f"[STARTUP] get_me() failed: {e}")
         try:
-            with open("/app/bot_status.json", "w") as _sf:
+            with open("bot_status.json", "w") as _sf:
                 json.dump({"connected": False, "error": str(e),
                            "time": time.strftime("%Y-%m-%d %H:%M:%S")}, _sf)
         except Exception:
@@ -1172,7 +1173,6 @@ async def _run_forever():
 
 
 if __name__ == "__main__":
-    # Remove stale session file to prevent conflicts on restart
     for _sf in ["bot.session", "bot.session-journal"]:
         try:
             if os.path.exists(_sf):
@@ -1180,7 +1180,6 @@ if __name__ == "__main__":
         except Exception:
             pass
 
-    # Delete webhook so MTProto long-polling can receive updates (keep pending)
     try:
         requests.post(
             f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook",
@@ -1192,4 +1191,4 @@ if __name__ == "__main__":
 
     reset_and_set_commands()
     notify_owner()
-    bot.run(_run_forever())
+    asyncio.run(main())
