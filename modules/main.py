@@ -72,20 +72,24 @@ bot.add_handler(MessageHandler(auth.my_plan_cmd, filters.command("plan") & filte
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
 @bot.on_message(filters.command("start"))
 async def start(bot, m: Message):
-    user_id = m.chat.id
-    user = await bot.get_me()
-    bot_username = user.username
+    try:
+     user_id = m.chat.id
+     user = await bot.get_me()
+     bot_username = user.username
 
-    mention = user.mention
-    caption = f"🌟 Welcome {m.from_user.mention} ! 🌟"
-    start_message = await bot.send_photo(
-        chat_id=m.chat.id,
-        photo="https://i.ibb.co/zTPJFct8/photo-2025-04-25-12-55-01-7497233558289776672.jpg",
-        caption=caption
-    )
+     mention = user.mention
+     caption = f"🌟 Welcome {m.from_user.mention} ! 🌟"
+     try:
+        start_message = await bot.send_photo(
+            chat_id=m.chat.id,
+            photo="https://i.ibb.co/zTPJFct8/photo-2025-04-25-12-55-01-7497233558289776672.jpg",
+            caption=caption
+        )
+     except Exception:
+        start_message = await m.reply_text(caption)
 
-    await asyncio.sleep(1)
-    await start_message.edit_text(
+     await asyncio.sleep(1)
+     await start_message.edit_text(
         f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
         f"Initializing Uploader bot... 🤖\n\n"
         f"Progress: [⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️] 0%\n\n"
@@ -149,7 +153,10 @@ async def start(bot, m: Message):
         await start_message.edit_text(
            f" 🎉 Welcome {m.from_user.first_name} to DRM Bot! 🎉\n\n"
            f"**You are currently using the free version.** 🆓\n\n<blockquote expandable>I'm here to make your life easier by downloading videos from your **.txt** file 📄 and uploading them directly to Telegram!</blockquote>\n\n**Want to get started? Press /id**\n\n💬 Contact : [{CREDIT}⁬](tg://openmessage?user_id={OWNER}) to Get The Subscription 🎫 and unlock the full potential of your new bot! 🔓\n", disable_web_page_preview=True, reply_markup=keyboard
-    )
+        )
+    except Exception as e:
+        print(f"Start handler error: {e}")
+        await m.reply_text(f"⚠️ Error: {e}")
 
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
