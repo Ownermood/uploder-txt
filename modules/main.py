@@ -1132,46 +1132,46 @@ sys.excepthook = _handle_unhandled_exception
 async def _run_forever():
     """Start background tasks then keep the event loop alive."""
     asyncio.create_task(_auto_cleanup())
+
+    # Confirm pyrogram is actually connected by querying Telegram via MTProto
     try:
-        await bot.send_message(OWNER, "⚡ Pyrogram connected! Bot is fully ready.")
+        me = await bot.get_me()
+        _logging.info(f"[STARTUP] Pyrogram connected as @{me.username} (id={me.id})")
+        # This message ONLY arrives if MTProto is truly working
+        for _admin in {OWNER, OWNER_ID, *ADMINS}:
+            try:
+                await bot.send_message(
+                    _admin,
+                    f"✅ @{me.username} is LIVE and listening!\nSend /start to test."
+                )
+                break
+            except Exception as e:
+                _logging.warning(f"[STARTUP] Could not message {_admin}: {e}")
     except Exception as e:
-        print(f"[STARTUP] Pyrogram test message failed: {e}")
+        _logging.critical(f"[STARTUP] get_me() failed — pyrogram NOT connected: {e}")
+
     await asyncio.Event().wait()
 
 
 if __name__ == "__main__":
     # Remove stale session file to prevent conflicts on restart
     for _sf in ["bot.session", "bot.session-journal"]:
-        if os.path.exists(_sf):
-            os.remove(_sf)
-            print(f"[STARTUP] Removed old session file: {_sf}")
+        try:
+            if os.path.exists(_sf):
+                os.remove(_sf)
+        except Exception:
+            pass
 
-    # Check and delete any existing webhook
+    # Delete webhook so MTProto long-polling can receive updates (keep pending)
     try:
-        wh_info = requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo", timeout=10).json()
-        wh_url = wh_info.get("result", {}).get("url", "")
-        if wh_url:
-            print(f"[STARTUP] Webhook found: {wh_url} — deleting...")
-            requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook", timeout=10)
-            print("[STARTUP] Webhook deleted.")
-        else:
-            print("[STARTUP] No webhook set. Long polling mode OK.")
+        requests.post(
+            f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook",
+            data={"drop_pending_updates": "false"},
+            timeout=10,
+        )
     except Exception as e:
-        print(f"[STARTUP] Webhook check failed: {e}")
+        print(f"[STARTUP] Webhook delete failed: {e}")
 
     reset_and_set_commands()
     notify_owner()
-    try:
-        bot.run(_run_forever())
-    except Exception as e:
-        err_text = f"🔴 PYROGRAM CRASH:\n{e}\n\n{_traceback.format_exc()[:3000]}"
-        _logging.critical(err_text)
-        try:
-            requests.post(
-                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-                data={"chat_id": OWNER, "text": err_text},
-                timeout=10
-            )
-        except Exception:
-            pass
-        raise
+    bot.run(_run_forever())
