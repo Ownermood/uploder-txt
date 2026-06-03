@@ -1112,6 +1112,8 @@ async def _run_forever():
 
 
 if __name__ == "__main__":
+    # Delete any existing webhook so long-polling works
+    requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook?drop_pending_updates=true")
     reset_and_set_commands()
     notify_owner()
     bot.run(_run_forever())
