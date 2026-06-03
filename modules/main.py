@@ -1164,5 +1164,14 @@ if __name__ == "__main__":
     try:
         bot.run(_run_forever())
     except Exception as e:
-        _logging.critical(f"[FATAL] bot.run crashed: {e}\n{_traceback.format_exc()}")
+        err_text = f"🔴 PYROGRAM CRASH:\n{e}\n\n{_traceback.format_exc()[:3000]}"
+        _logging.critical(err_text)
+        try:
+            requests.post(
+                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                data={"chat_id": OWNER, "text": err_text},
+                timeout=10
+            )
+        except Exception:
+            pass
         raise
