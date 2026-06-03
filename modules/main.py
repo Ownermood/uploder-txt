@@ -1137,6 +1137,18 @@ async def _run_forever():
     try:
         me = await bot.get_me()
         _logging.info(f"[STARTUP] Pyrogram connected as @{me.username} (id={me.id})")
+        # Write live status to a file so the flask health page can show it
+        try:
+            with open("/app/bot_status.json", "w") as _sf:
+                json.dump({
+                    "connected": True,
+                    "username": me.username,
+                    "id": me.id,
+                    "name": me.first_name,
+                    "time": time.strftime("%Y-%m-%d %H:%M:%S"),
+                }, _sf)
+        except Exception:
+            pass
         # This message ONLY arrives if MTProto is truly working
         for _admin in {OWNER, OWNER_ID, *ADMINS}:
             try:
@@ -1149,6 +1161,12 @@ async def _run_forever():
                 _logging.warning(f"[STARTUP] Could not message {_admin}: {e}")
     except Exception as e:
         _logging.critical(f"[STARTUP] get_me() failed — pyrogram NOT connected: {e}")
+        try:
+            with open("/app/bot_status.json", "w") as _sf:
+                json.dump({"connected": False, "error": str(e),
+                           "time": time.strftime("%Y-%m-%d %H:%M:%S")}, _sf)
+        except Exception:
+            pass
 
     await asyncio.Event().wait()
 
